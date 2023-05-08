@@ -45,7 +45,6 @@ public class StegoPane extends Pane {
     public StegoPane() {
 
         screenBounds = Screen.getPrimary().getVisualBounds();
-        System.out.println("Width: " + screenBounds.getWidth() + "Height: " + screenBounds.getHeight());
 
         //Instantiate the textArea
         messageText = new TextArea();
@@ -68,6 +67,8 @@ public class StegoPane extends Pane {
         imageText.setEditable(false);
         imageText.setWrapText(true);
         // imageText.setScrollLeft(0);
+
+        imageView = new ImageView();
 
         //Instantiate the labels
         beginningLabel = new Label("Welcome to the Steganography App");
@@ -101,9 +102,9 @@ public class StegoPane extends Pane {
         messageText.relocate(0, 100);
 
         //Set the location of the newImage and prevImage buttons and the imageText
-        // imageText.relocate((screenBounds.getWidth() / 2), 50);
-        // newImage.relocate((screenBounds.getWidth() / 3), 100);
-        // prevImage.relocate((screenBounds.getWidth() / 2.5), 150);
+        imageText.relocate((screenBounds.getWidth() / 2), 50);
+        newImage.relocate((screenBounds.getWidth() / 2), 200);
+        prevImage.relocate((screenBounds.getWidth() / 1.7), 200);
 
         //Set the location of the encryptLabel and encrypt button
         // encryptLabel.relocate(0, (screenBounds.getHeight() / 1.8));
@@ -113,28 +114,30 @@ public class StegoPane extends Pane {
         sendLabel.relocate(0, (screenBounds.getHeight() / 1.4));
         // this.add(send, 2, 4);
 
-        //Add an event listener for the prevImage button to choose a previously used image
-        // prevImage.setOnAction(e -> {
-        //     //Instantiate a FileChooser object
-        //     FileChooser fileChooser = new FileChooser();
-        //     //Set the title of the fileChooser
-        //     fileChooser.setTitle("Open Image File");
-        //     //Set the initial directory of the fileChooser
-        //     fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        //     //Set the extension filter of the fileChooser
-        //     fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
-        //     //Instantiate a File object
-        //     File selectedFile = fileChooser.showOpenDialog(null);
-        //     //Instantiate an Image object
-        //     Image image = new Image(selectedFile.toURI().toString());
-        //     //Add the image to the imageView
-        //     imageView = new ImageView(image);
-        //     //Set the size of the ImageView
-        //     imageView.setFitHeight(300);
-        //     imageView.setFitWidth(300);
-        //     //Set the location of the ImageView
-        //     imageView.relocate(0, 0);
-        // });
+        //Add an event listener for the prevImage button to choose a previously used image 
+        //from the PrevImages folder in the project
+        prevImage.setOnAction(e -> {
+            // Instantiate a FileChooser object
+            FileChooser fileChooser = new FileChooser();
+            //Set the title of the fileChooser
+            fileChooser.setTitle("Open Image File");
+            //Set the initial directory of the fileChooser
+            // fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "\\Documents\\PrevImages"));
+            //Set the extension filter of the fileChooser
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+            //Instantiate a File object
+            File selectedFile = fileChooser.showOpenDialog(null);
+            //Instantiate an Image object
+            Image image = new Image(selectedFile.toURI().toString());
+            //Add the image to the imageView
+            imageView = new ImageView(image);
+            //Set the size of the ImageView
+            imageView.setFitHeight(300);
+            imageView.setFitWidth(300);
+            //Set the location of the ImageView
+            imageView.relocate(0, 0);
+        });
 
         //Add an event listener for the newImage button to open a file chooser from the user's computer
         newImage.setOnAction(e -> {
@@ -154,13 +157,13 @@ public class StegoPane extends Pane {
             imageView = new ImageView(image);
             //Set the size of the ImageView
             imageView.setFitHeight(300);
-            imageView.setFitWidth(300);
-            //Set the location of the ImageView
-            imageView.relocate(0, 0);
+            // imageView.setFitWidth(300);
+            //Set the location of the ImageView to the top left of the pane
+            imageView.relocate(screenBounds.getWidth() / 1.1, 200);
+            //Add the selected image to the PrevImages folder in the project
+            // selectedFile.renameTo(new File("src/main/java/edu/guilford/PrevImages/" + selectedFile.getName()));
         });
 
-
-        this.getChildren().addAll(beginningLabel, messageLabel, messageText, 
-        imageText, encryptLabel, encrypt, sendLabel, imageView, newImage, prevImage);
+        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, newImage, prevImage, imageView);
     }
 }
