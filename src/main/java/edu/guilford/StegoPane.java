@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 
+
 //This class will be the pane that holds the method for the user
 //to input the message they want to encrypt and the image they want
 //to encrypt it in
@@ -99,8 +100,8 @@ public class StegoPane extends Pane {
         beginningLabel.relocate((screenBounds.getWidth() / 2.8), 0);
 
         //Set the location of the messageLabel and message
-        messageLabel.relocate(0, 50);
-        messageText.relocate(0, 100);
+        messageLabel.relocate(screenBounds.getWidth() / 20, 50);
+        messageText.relocate(screenBounds.getWidth() / 20, 100);
 
         //Set the location of the newImage and prevImage buttons and the imageText
         imageText.relocate((screenBounds.getWidth() / 2), 50);
@@ -131,16 +132,18 @@ public class StegoPane extends Pane {
             File selectedFile2 = fileChooser2.showOpenDialog(null);
             //Instantiate an Image object
             Image image2 = new Image(selectedFile2.toURI().toString());
+            //****apache commons io***
+            //Add the selected image to the PrevImages folder in the project
+            selectedFile2.renameTo(new File("C:/stegofinalproject/src/main/PrevImages/down" + selectedFile2.getName()));
+
             //Add the image to the imageView
-            imageView = new ImageView(image2);
+            imageView.setImage(image2);
             //Set the size of the ImageView
             imageView.setFitHeight(300);
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
             imageView.relocate(screenBounds.getWidth() / 2, 400);
-            //Add the selected image to the PrevImages folder in the project
-            selectedFile2.renameTo(new File("C:/Users/Owner/OneDrive/Documents/GitHub/stegofinalproject/src/main/PrevImages" + selectedFile2.getName()));
         });
 
         //Add an event listener for the prevImage button to choose a previously used image 
@@ -151,7 +154,7 @@ public class StegoPane extends Pane {
             //Set the title of the fileChooser
             fileChooser.setTitle("Open Previously Used Image");
             //Get the path to the PrevImage Folder
-            String path = "C:/Users/Owner/OneDrive/Documents/GitHub/stegofinalproject/src/main/PrevImages";
+            String path = "C:/stegofinalproject/src/main/PrevImages";
             //Set the initial directory of the fileChooser
             fileChooser.setInitialDirectory(new File(path));
             //Set the extension filter of the fileChooser
@@ -161,12 +164,13 @@ public class StegoPane extends Pane {
             //Instantiate an Image object
             Image image = new Image(selectedFile.toURI().toString());
             //Add the image to the imageView
-            imageView = new ImageView(image);
+            imageView.setImage(image);
             //Set the size of the ImageView
             imageView.setFitHeight(300);
-            imageView.setFitWidth(300);
-            //Set the location of the ImageView
-            imageView.relocate(0, 0);
+            //Preserve the aspect ratio of the image
+            imageView.setPreserveRatio(true);
+            //Set the location of the ImageView to the top left of the pane
+            imageView.relocate(screenBounds.getWidth() / 2, 400);
         });
 
         this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, newImage, prevImage, imageView);
