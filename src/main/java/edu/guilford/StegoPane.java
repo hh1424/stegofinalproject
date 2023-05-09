@@ -33,7 +33,7 @@ public class StegoPane extends Pane {
     private Button newImage;
     //add a button for the user to click to select a previously used image
     private Button prevImage;
-    private TextArea imageText;
+    private Label imageText;
     //add an imageview to show the image chosen
     private ImageView imageView;
     
@@ -57,16 +57,14 @@ public class StegoPane extends Pane {
         messageText.setWrapText(true);
         //Scroll the text in the textArea
         messageText.setScrollLeft(100);
-        //Scan the messageText and save it in message
-        message = messageText.getText();
 
-        imageText = new TextArea("Choose between either a new image or a previously used image to encrypt the message in");
+        imageText = new Label("Choose between either a new image or a previously used image");
         //Change the size and font of the imageText
         imageText.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
         //Change the length of the imageText
-        imageText.setPrefSize(600, 100);
-        imageText.setEditable(false);
-        imageText.setWrapText(true);
+        // imageText.setPrefSize(600, 100);
+        // imageText.setEditable(false);
+        // imageText.setWrapText(true);
         // imageText.setScrollLeft(0);
 
         //Instantiate the imageView
@@ -79,7 +77,7 @@ public class StegoPane extends Pane {
         messageLabel = new Label("Enter the message you want to encrypt");
         //Change the size and font of the label
         messageLabel.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
-        encryptLabel = new Label("Click to encrypt the message");
+        encryptLabel = new Label("Click to encrypt the message. Click to embed the message in the image");
         //Change the size and font of the label
         encryptLabel.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
         sendLabel = new Label("Click to send the encrypted message into the image");
@@ -91,7 +89,9 @@ public class StegoPane extends Pane {
         //Change the font size of the button
         encrypt.setStyle("-fx-font-size: 15px; -fx-font-type: Arial");
         newImage = new Button("New Image");
+        newImage.setStyle("-fx-font-size: 15px; -fx-font-type: Arial");
         prevImage = new Button("Previous Image");
+        prevImage.setStyle("-fx-font-size: 15px; -fx-font-type: Arial");
         send = new Button("Send");
         //Change the font size of the button
         send.setStyle("-fx-font-size: 15px; -fx-font-type: Arial");
@@ -104,17 +104,17 @@ public class StegoPane extends Pane {
         messageText.relocate(screenBounds.getWidth() / 20, 100);
 
         //Set the location of the newImage and prevImage buttons and the imageText
-        imageText.relocate((screenBounds.getWidth() / 2), 50);
-        newImage.relocate((screenBounds.getWidth() / 2), 200);
-        prevImage.relocate((screenBounds.getWidth() / 1.7), 200);
+        imageText.relocate((screenBounds.getWidth() / 1.5), 50);
+        newImage.relocate((screenBounds.getWidth() / 1.5), 150);
+        prevImage.relocate((screenBounds.getWidth() / 1.2), 150);
 
         //Set the location of the encryptLabel and encrypt button
-        // encryptLabel.relocate(0, (screenBounds.getHeight() / 1.8));
-        // encrypt.relocate(0, (screenBounds.getHeight() / 1.6));
+        encryptLabel.relocate((screenBounds.getWidth() / 27), (screenBounds.getHeight() / 2.8));
+        encrypt.relocate((screenBounds.getWidth() / 15), (screenBounds.getHeight() / 2.5));
 
         //Set the location of the sendLabel and send button
-        sendLabel.relocate(0, (screenBounds.getHeight() / 1.4));
-        // this.add(send, 2, 4);
+        // sendLabel.relocate((screenBounds.getWidth() / 8), (screenBounds.getHeight() / 2.8));
+        send.relocate((screenBounds.getWidth() / 5), (screenBounds.getHeight() / 2.5));
 
         //Add an event listener for the newImage button to open a file chooser from the user's computer
         newImage.setOnAction(e -> {
@@ -132,18 +132,18 @@ public class StegoPane extends Pane {
             File selectedFile2 = fileChooser2.showOpenDialog(null);
             //Instantiate an Image object
             Image image2 = new Image(selectedFile2.toURI().toString());
-            //****apache commons io***
+
             //Add the selected image to the PrevImages folder in the project
             selectedFile2.renameTo(new File("C:/stegofinalproject/src/main/PrevImages/down" + selectedFile2.getName()));
 
             //Add the image to the imageView
             imageView.setImage(image2);
             //Set the size of the ImageView
-            imageView.setFitHeight(300);
+            imageView.setFitHeight(400);
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
-            imageView.relocate(screenBounds.getWidth() / 2, 400);
+            imageView.relocate(screenBounds.getWidth() / 1.7, 300);
         });
 
         //Add an event listener for the prevImage button to choose a previously used image 
@@ -166,13 +166,32 @@ public class StegoPane extends Pane {
             //Add the image to the imageView
             imageView.setImage(image);
             //Set the size of the ImageView
-            imageView.setFitHeight(300);
+            imageView.setFitHeight(400);
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
-            imageView.relocate(screenBounds.getWidth() / 2, 400);
+            imageView.relocate(screenBounds.getWidth() / 1.7, 300);
         });
 
-        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, newImage, prevImage, imageView);
+        //Add an event listener for the encrypt button to encrypt the message the user entered using the crypto class
+        encrypt.setOnAction(e -> {
+            //Get the message the user entered
+            message = messageText.getText();
+            //Instantiate a Crypto object
+            Crypto crypto = new Crypto();
+            //Try to encrypt the message the user entered
+            try {
+                //Encrypt the message the user entered
+                crypto.encrypt(message);
+            } catch (Exception e1) {
+                //Print the stack trace if there is an error
+                e1.printStackTrace();
+            }
+
+            System.out.println("Message: " + message);
+            System.out.println("Encrypted Message: " + crypto);
+        });
+
+        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, newImage, prevImage, imageView, encrypt, encryptLabel, send);
     }
 }
