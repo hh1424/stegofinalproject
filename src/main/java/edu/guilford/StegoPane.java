@@ -100,7 +100,7 @@ public class StegoPane extends Pane {
         send = new Button("Send");
         //Change the font size of the button
         send.setStyle("-fx-font-size: 15px; -fx-font-type: Arial");
-
+        
         //Set the location of the beginningLabel to the top center of the pane
         beginningLabel.relocate((screenBounds.getWidth() / 2.8), 0);
 
@@ -117,7 +117,7 @@ public class StegoPane extends Pane {
         //Set the location of the encryptLabel and encrypt button
         encryptLabel.relocate((screenBounds.getWidth() / 27), (screenBounds.getHeight() / 1.78));
         encrypt.relocate((screenBounds.getWidth() / 15), (screenBounds.getHeight() / 1.58));
-        send.relocate((screenBounds.getWidth() / 5), (screenBounds.getHeight() / 1.58));
+        send.relocate((screenBounds.getWidth() / 3.9), (screenBounds.getHeight() / 1.58));
 
         //Set the location of the sendLabel
         // sendLabel.relocate((screenBounds.getWidth() / 8), (screenBounds.getHeight() / 2.8));
@@ -127,7 +127,7 @@ public class StegoPane extends Pane {
             // Instantiate a FileChooser object
             FileChooser fileChooser2 = new FileChooser();
             //Set the title of the fileChooser
-            fileChooser2.setTitle("Select New Image");
+            fileChooser2.setTitle("Open New Image");
             //Find the path to the users home
             String path2 = "user.home";
             //Set the initial directory of the fileChooser
@@ -152,7 +152,7 @@ public class StegoPane extends Pane {
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
-            imageView.relocate(screenBounds.getWidth() / 1.7, 300);
+            imageView.relocate(screenBounds.getWidth() / 1.48, 220);
         });
 
         //Add an event listener for the prevImage button to choose a previously used image 
@@ -179,27 +179,50 @@ public class StegoPane extends Pane {
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
-            imageView.relocate(screenBounds.getWidth() / 1.6, 200);
+            imageView.relocate(screenBounds.getWidth() / 1.48, 220);
         });
 
         //Add an event listener for the encrypt button to encrypt the message the user entered using the crypto class
         encrypt.setOnAction(e -> {
             //Get the message the user entered
             message = messageText.getText();
-            //Instantiate a Crypto object
-            Crypto crypto = new Crypto();
+            //Instantiate a string object
+            String crypto = "";
             //Try to encrypt the message the user entered
             try {
                 //Encrypt the message the user entered
-                crypto.encrypt(message);
+                crypto = Crypto.encrypt(message);
             } catch (Exception e1) {
                 //Print the stack trace if there is an error
                 e1.printStackTrace();
             }
 
-            System.out.println("Message: " + message);
-            System.out.println("Encrypted Message: " + crypto);
+            //***Print the encrypted and decrypted message to the console***
+            // System.out.println("Message: " + message);
+            // System.out.println("Encrypted Message: " + crypto);
+            // //decrypt the message the user entered
+            // try {
+            //     System.out.println("Decrypted Message: " + Crypto.decrypt(crypto));
+            // } catch (Exception e1) {
+            //     //Print the stack trace if there is an error
+            //     e1.printStackTrace();
+            // }
         });
+
+        //Add an event listener to send the encrypted message into the image the user chose
+        //and creates a popup window to save the image to the user's computer
+        // send.setOnAction(e -> {
+        //     //Instantiate a Stego object
+        //     Stego stego = new Stego();
+        //     //Try to embed the encrypted message into the image the user chose
+        //     try {
+        //         //Embed the encrypted message into the image the user chose
+        //         stego.embed();
+        //     } catch (Exception e1) {
+        //         //Print the stack trace if there is an error
+        //         e1.printStackTrace();
+        //     }
+        // });
 
         this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, imageText2, newImage, prevImage, imageView, encrypt, encryptLabel, send);
     }

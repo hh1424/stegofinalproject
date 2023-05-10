@@ -22,7 +22,7 @@ public class StegoScene extends Application {
 
         //Get the width and height of the screen
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        System.out.println("Width: " + screenBounds.getWidth() + "Height: " + screenBounds.getHeight());
+        System.out.println("Width: " + screenBounds.getWidth() + " Height: " + screenBounds.getHeight());
 
         scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
         stage.setScene(scene);

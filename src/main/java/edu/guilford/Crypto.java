@@ -1,7 +1,6 @@
 package edu.guilford;
 
 import java.security.Key;
-import java.security.MessageDigest;
 import java.util.Base64;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -43,6 +42,4 @@ public class Crypto {
         // keyBytes = java.util.Arrays.copyOf(keyBytes, 16);
         // return new javax.crypto.spec.SecretKeySpec(keyBytes, ALGORITHM);
     }
-
-    
 }
