@@ -2,6 +2,8 @@ package edu.guilford;
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
+
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,6 +36,7 @@ public class StegoPane extends Pane {
     //add a button for the user to click to select a previously used image
     private Button prevImage;
     private Label imageText;
+    private Label imageText2;
     //add an imageview to show the image chosen
     private ImageView imageView;
     
@@ -58,9 +61,11 @@ public class StegoPane extends Pane {
         //Scroll the text in the textArea
         messageText.setScrollLeft(100);
 
-        imageText = new Label("Choose between either a new image or a previously used image");
+        imageText = new Label("Choose between either a new image");
+        imageText2 = new Label("or a previously used image");
         //Change the size and font of the imageText
         imageText.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
+        imageText2.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
         //Change the length of the imageText
         // imageText.setPrefSize(600, 100);
         // imageText.setEditable(false);
@@ -105,16 +110,17 @@ public class StegoPane extends Pane {
 
         //Set the location of the newImage and prevImage buttons and the imageText
         imageText.relocate((screenBounds.getWidth() / 1.5), 50);
+        imageText2.relocate((screenBounds.getWidth() / 1.5), 80);
         newImage.relocate((screenBounds.getWidth() / 1.5), 150);
         prevImage.relocate((screenBounds.getWidth() / 1.2), 150);
 
         //Set the location of the encryptLabel and encrypt button
-        encryptLabel.relocate((screenBounds.getWidth() / 27), (screenBounds.getHeight() / 2.8));
-        encrypt.relocate((screenBounds.getWidth() / 15), (screenBounds.getHeight() / 2.5));
+        encryptLabel.relocate((screenBounds.getWidth() / 27), (screenBounds.getHeight() / 1.78));
+        encrypt.relocate((screenBounds.getWidth() / 15), (screenBounds.getHeight() / 1.58));
+        send.relocate((screenBounds.getWidth() / 5), (screenBounds.getHeight() / 1.58));
 
-        //Set the location of the sendLabel and send button
+        //Set the location of the sendLabel
         // sendLabel.relocate((screenBounds.getWidth() / 8), (screenBounds.getHeight() / 2.8));
-        send.relocate((screenBounds.getWidth() / 5), (screenBounds.getHeight() / 2.5));
 
         //Add an event listener for the newImage button to open a file chooser from the user's computer
         newImage.setOnAction(e -> {
@@ -132,14 +138,17 @@ public class StegoPane extends Pane {
             File selectedFile2 = fileChooser2.showOpenDialog(null);
             //Instantiate an Image object
             Image image2 = new Image(selectedFile2.toURI().toString());
-
-            //Add the selected image to the PrevImages folder in the project
-            selectedFile2.renameTo(new File("C:/stegofinalproject/src/main/PrevImages/down" + selectedFile2.getName()));
-
+            //Copy the image using the Commons IO library
+            try {
+                FileUtils.copyFile(selectedFile2, new File("C:/stegofinalproject/src/main/PrevImages/Used" + selectedFile2.getName()), true);
+            } catch (Exception e1) {
+                //Print the stack trace if there is an error
+                e1.printStackTrace();
+            } 
             //Add the image to the imageView
             imageView.setImage(image2);
             //Set the size of the ImageView
-            imageView.setFitHeight(400);
+            imageView.setFitWidth(300);
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
@@ -166,11 +175,11 @@ public class StegoPane extends Pane {
             //Add the image to the imageView
             imageView.setImage(image);
             //Set the size of the ImageView
-            imageView.setFitHeight(400);
+            imageView.setFitWidth(300);
             //Preserve the aspect ratio of the image
             imageView.setPreserveRatio(true);
             //Set the location of the ImageView to the top left of the pane
-            imageView.relocate(screenBounds.getWidth() / 1.7, 300);
+            imageView.relocate(screenBounds.getWidth() / 1.6, 200);
         });
 
         //Add an event listener for the encrypt button to encrypt the message the user entered using the crypto class
@@ -192,6 +201,6 @@ public class StegoPane extends Pane {
             System.out.println("Encrypted Message: " + crypto);
         });
 
-        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, newImage, prevImage, imageView, encrypt, encryptLabel, send);
+        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, imageText2, newImage, prevImage, imageView, encrypt, encryptLabel, send);
     }
 }
