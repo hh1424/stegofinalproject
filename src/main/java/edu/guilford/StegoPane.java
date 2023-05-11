@@ -158,7 +158,7 @@ public class StegoPane extends Pane {
         decrypt.relocate((screenBounds.getWidth() / 1.8), (screenBounds.getHeight() / 1.2));
 
         //Set the location of the hiddenLabel between the directionsLabel and the questionsLabel
-        hiddenLabel.relocate((screenBounds.getWidth() / 2.8), (screenBounds.getHeight() / 1.4));
+        hiddenLabel.relocate((screenBounds.getWidth() / 2.8), (screenBounds.getHeight() / 1.5));
 
         //Add an event listener for the newImage button to open a file chooser from the user's computer
         newImage.setOnAction(e -> {
@@ -178,7 +178,7 @@ public class StegoPane extends Pane {
             Image image = new Image(selectedFile.toURI().toString());
             //Copy the image using the Commons IO library
             try {
-                FileUtils.copyFile(selectedFile, new File("C:/stegofinalproject/src/main/PrevImages/Used" + selectedFile.getName()), true);
+                FileUtils.copyFile(selectedFile, new File("C:/stegofinalproject/src/main/PrevImages/Final" + selectedFile.getName()), true);
             } catch (Exception e1) {
                 //Print the stack trace if there is an error
                 e1.printStackTrace();
@@ -234,17 +234,6 @@ public class StegoPane extends Pane {
                 //Print the stack trace if there is an error
                 e1.printStackTrace();
             }
-
-            //***Print the encrypted and decrypted message to the console***
-            System.out.println("Message: " + message);
-            System.out.println("Encrypted Message: " + crypto);
-            //decrypt the message the user entered
-            try {
-                System.out.println("Decrypted Message: " + Crypto.decrypt(crypto));
-            } catch (Exception e1) {
-                //Print the stack trace if there is an error
-                e1.printStackTrace();
-            }
         });
 
         //Add an event listener to send the encrypted message into the image the user chose
@@ -254,12 +243,12 @@ public class StegoPane extends Pane {
                 //write an if else statement for if the user chose a new image or a previously used image to run the encrypt method in the stego class
                 if (newImage.isPressed()) {
                     //Get the file
-                    File selectedFile = new File("C:/stegofinalproject/src/main/PrevImages/Used" + imageView.getImage().getUrl().substring(5));
+                    File selectedFile = new File("C:/stegofinalproject/src/main/PrevImages/Final" + imageView.getImage().getUrl().substring(5));
                     //Run the encrypt method in the stego class
                     EncryptionLSB.Encrypt(selectedFile, message);
                 } else if (prevImage.isPressed()) {
                     //Instantiate a File object
-                    File selectedFile = new File("C:/stegofinalproject/src/main/EncodedImages/Used" + imageView.getImage().getUrl().substring(5));
+                    File selectedFile = new File("C:/stegofinalproject/src/main/EncodedImages/Final" + imageView.getImage().getUrl().substring(5));
                     //Run the encrypt method in the stego class
                     EncryptionLSB.Encrypt(selectedFile, message);
                 }
@@ -273,7 +262,7 @@ public class StegoPane extends Pane {
             //Set the initial directory of the fileChooser
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
             //Set a default file name
-            fileChooser.setInitialFileName("encryptedImage.png");
+            fileChooser.setInitialFileName("image.png");
             //Show the dialog and get the selected file
             File selectedFile = fileChooser.showSaveDialog(getScene().getWindow());
             if (selectedFile != null) {
@@ -290,7 +279,7 @@ public class StegoPane extends Pane {
             }
             //Add a copy of the image to the EncodedImages folder
             try {
-                FileUtils.copyFile(selectedFile, new File("C:/stegofinalproject/src/main/EncodedImages/Used" + selectedFile.getName()), true);
+                FileUtils.copyFile(selectedFile, new File("C:/stegofinalproject/src/main/EncodedImages/Final" + selectedFile.getName()), true);
             } catch (Exception e1) {
                 //Print the stack trace if there is an error
                 e1.printStackTrace();
@@ -325,9 +314,23 @@ public class StegoPane extends Pane {
 
         //Add an event listener for the decrypt button to decrypt the message the user entered using the crypto class
         decrypt.setOnAction(e -> {
+            //Get the message from the image
             DecryptionLSB.Decrypt();
-            //Save the message to the hiddenLabel
-            // hiddenLabel.setText("The hidden message is: " + DecryptionLSB.Decrypt());
+            //Grab the string from the DecryptionLSB class
+            
+            //Get the message
+            message = messageText.getText();
+            //Get the encrypt and decrypted message
+            try{
+            String encrypt = "";
+            encrypt = Crypto.encrypt(message);
+            String decrypt = "";
+            decrypt = Crypto.decrypt(encrypt);
+            hiddenLabel.setText("The coded message: " + encrypt + "\n" + "The decoded message: " + decrypt);
+            } catch (Exception e1) {
+                //Print the stack trace if there is an error
+                e1.printStackTrace();
+            }
         });
 
         this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, imageText2, newImage, prevImage, imageView, encrypt, encryptLabel, send, directionsArea, questionLabel, stegoImage, decrypt, hiddenLabel);

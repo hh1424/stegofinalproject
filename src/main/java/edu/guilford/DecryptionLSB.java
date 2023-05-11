@@ -18,8 +18,10 @@ public class DecryptionLSB {
      * Decrypts the message embedded in the LSB of an image.
      */
     public static void Decrypt() {
+        //Get the path of the image to be decrypted
         String path = "C:/stegofinalproject/src/main/EncodedImages/Used";
-        String newImageFileString = path + "\\export.png";
+        //Get the image file
+        String newImageFileString = path + "Finalimage.png";
         File newImageFile = new File(newImageFileString);
         try {
             BufferedImage image = ImageIO.read(newImageFile);

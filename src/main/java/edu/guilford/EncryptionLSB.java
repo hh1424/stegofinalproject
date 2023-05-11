@@ -28,7 +28,7 @@ public class EncryptionLSB {
     public static void Encrypt(File selectedFile, String message){
         //Create a path to save the new image to
         String path = "C:/stegofinalproject/src/main/EncodedImages/Used";
-        String newImageFileString = path + "\\export.png";
+        String newImageFileString = path + "Finalimage.png";
         File newImageFile = new File(newImageFileString);
         
         BufferedImage image;
