@@ -326,6 +326,8 @@ public class StegoPane extends Pane {
         //Add an event listener for the decrypt button to decrypt the message the user entered using the crypto class
         decrypt.setOnAction(e -> {
             DecryptionLSB.Decrypt();
+            //Save the message to the hiddenLabel
+            // hiddenLabel.setText("The hidden message is: " + DecryptionLSB.Decrypt());
         });
 
         this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, imageText2, newImage, prevImage, imageView, encrypt, encryptLabel, send, directionsArea, questionLabel, stegoImage, decrypt, hiddenLabel);
