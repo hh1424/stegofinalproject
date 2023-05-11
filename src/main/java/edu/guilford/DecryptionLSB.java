@@ -8,8 +8,15 @@ import java.awt.Color;
 
 import javax.imageio.ImageIO;
 
+ 
+/**
+ * A class that provides methods for decrypting a message embedded in LSB (Least Significant Bit) of an image.
+ */
+
 public class DecryptionLSB {
-    
+    /**
+     * Decrypts the message embedded in the LSB of an image.
+     */
     public static void Decrypt() {
         String path = "C:/stegofinalproject/src/main/EncodedImages/Used";
         String newImageFileString = path + "\\export.png";
@@ -22,6 +29,11 @@ public class DecryptionLSB {
             e.printStackTrace();
         }
     }
+/**
+ * Retrieves an array of Pixels from the given image.
+ * @param imageToEmbed the image from which to extract the pixel array
+ * @return an array of Pixels representing the image
+ */
 
     private static Pixel[] GetPixelArray(BufferedImage imageToEmbed) {
         int width = imageToEmbed.getWidth();
@@ -37,6 +49,11 @@ public class DecryptionLSB {
         }
         return pixels;
     }
+/**
+ * Decodes the binary message from the pixels.
+ * @param pixels the array of Pixels containing the encoded message
+ * @return the decoded message as a String
+ */
 
     private static String DecodeMessageBinaryFromPixels(Pixel[] pixels) {
         boolean completed = false;
@@ -55,6 +72,11 @@ public class DecryptionLSB {
         }
         return messageBuilder.toString();
     }
+/**
+ * Converts an array of Pixels to a character based on the LSB of their RGB values.
+ * @param pixelsToRead the array of Pixels to be converted
+ * @return the converted character
+ */
 
     private static char ConvertPixelsToCharacter(Pixel[] pixelsToRead) {
         ArrayList<String> binaryValues = new ArrayList<String>();
@@ -66,6 +88,11 @@ public class DecryptionLSB {
         }
         return ConvertBinaryValuesToCharacter(binaryValues);
     }
+/**
+ * Converts the RGB values of a Pixel to binary strings.
+ * @param pixel the Pixel containing the RGB values
+ * @return an array of binary strings representing the RGB values
+ */
 
     private static String[] TurnPixelIntergersToBinary(Pixel pixel) {
         String[] values = new String[3];
@@ -74,6 +101,11 @@ public class DecryptionLSB {
         values[2] = Integer.toBinaryString(pixel.getColor().getBlue());
         return values;
     }
+/**
+ * Converts a list of binary values into a character by extracting the least significant bit of each binary value and converting it into ASCII code.
+ * @param binaryValues The list of binary values to be converted.
+ * @return The character representation of the binary values.
+ */
 
     private static char ConvertBinaryValuesToCharacter(ArrayList<String> binaryValues) {
         StringBuilder endbinary = new StringBuilder("");
@@ -85,6 +117,11 @@ public class DecryptionLSB {
         int ascii = Integer.parseInt(noZeros, 2);
         return (char)ascii;
     }
+/**
+ * Removes any leading padded zeros from a binary string.
+ * @param endBinaryString The binary string to remove padded zeros from.
+ * @return The modified binary string without leading zeros.
+ */
 
     private static String RemovePaddedZeros(String endBinaryString) {
         StringBuilder builder = new StringBuilder(endBinaryString);
@@ -102,6 +139,11 @@ public class DecryptionLSB {
         return builder.toString();
     }
 
+/**
+ * Checks if the least significant bit of the blue color component of a Pixel represents the end of a message.
+ * @param pixel The Pixel object to check.
+ * @return True if the least significant bit of the blue component ends with '1', indicating the end of a message. False otherwise.
+ */
     private static boolean IsEndOfMessage(Pixel pixel) {
         if(TurnPixelIntergersToBinary(pixel)[2].endsWith("1")) {
             return false;

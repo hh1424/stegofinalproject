@@ -13,7 +13,17 @@ import javax.imageio.ImageIO;
 //This class is used to hide the message the user entered into the image the user chose
 //and then save the new image with the message hidden in it
 //We will you LSB - Least Significant Bit
+
+/**
+ * Provides methods for encrypting a message into an image using the LSB (Least Significant Bit) technique.
+*/
 public class EncryptionLSB {
+
+/**
+ * Encrypts the given message into the selected image file using the LSB technique.
+ * @param selectedFile the selected image file to embed the message into
+ * @param message the message to be encrypted and embedded
+ */
 
     public static void Encrypt(File selectedFile, String message){
         //Create a path to save the new image to
@@ -35,6 +45,12 @@ public class EncryptionLSB {
         }
     }
 
+    /**
+     * Retrieves a new BufferedImage object from the given image for embedding the message.
+     * @param image the original image to be embedded
+     * @return the new BufferedImage object for embedding
+    */
+
     private static BufferedImage GetImageToEmbed(BufferedImage image) {
         //Determine how the colors are represented within AWT (0,0,0) - (255,255,255)
         ColorModel colorModel = image.getColorModel();
@@ -43,6 +59,12 @@ public class EncryptionLSB {
         WritableRaster raster = image.copyData(null);
         return new BufferedImage(colorModel, raster, isAlphaPremultiplied, null);
     }
+
+    /**
+     * Retrieves an array of Pixels representing the image to be embedded.
+     * @param imageToEmbed the BufferedImage object for embedding
+     * @return an array of Pixels representing the image to be embedded
+    */
 
     private static Pixel[] GetPixelArray(BufferedImage imageToEmbed) {
         int width = imageToEmbed.getWidth();
@@ -59,11 +81,22 @@ public class EncryptionLSB {
         return pixels;
     }
 
+/**
+ * Converts the message into an array of binary strings.
+ * @param message the message to be converted
+ * @return an array of binary strings representing the message
+ */
+
     private static String[] ConvertMessageToBinary(String message) {
         int[] messageAscii = ConvertMessageToAscii(message);
         String[] messageBinary = ConvertAsciiToBinary(messageAscii);
         return messageBinary;
     }
+/**
+ * Converts the message into an array of ASCII values.
+* @param message the message to be converted
+* @return an array of ASCII values representing the message
+*/
 
     private static int[] ConvertMessageToAscii(String message) {
         int[] messageAscii = new int[message.length()];
@@ -75,6 +108,12 @@ public class EncryptionLSB {
         return messageAscii;
     }
 
+/**
+ * Converts an array of ASCII values into an array of binary strings.
+ * @param asciiValues the array of ASCII values to be converted
+ * @return an array of binary strings representing the ASCII values
+ */
+
     private static String[] ConvertAsciiToBinary(int[] asciiValues) {
         String[] messageBinary = new String[asciiValues.length];
         for(int i = 0; i < asciiValues.length; i++) {
@@ -83,6 +122,11 @@ public class EncryptionLSB {
         }
         return messageBinary;
     }
+/**
+ * Left-pads the given binary string with zeros to ensure it has a length of 8 characters.
+ * @param binary the binary string to be left-padded
+ * @return the left-padded binary string
+ */
 
     private static String leftPadZeros(String binary) {
         StringBuilder sb = new StringBuilder("00000000");
@@ -92,6 +136,11 @@ public class EncryptionLSB {
         }
         return sb.toString();
     }
+/**
+ * Encodes the binary message into the pixels of the image.
+ * @param pixels the array of Pixels representing the image
+ * @param messageBinary the array of binary strings representing the message
+ */
 
     private static void EncodeMessageBinaryInPixels(Pixel[] pixels, String[] messageBinary) {
         int pixelIndex = 0;
@@ -105,6 +154,12 @@ public class EncryptionLSB {
             pixelIndex = pixelIndex + 3;
         }
     }
+/**
+ * Changes the color of the pixels based on the binary message and the specified conditions.
+ * @param messageBinary the binary string representing the message
+ * @param pixels the array of Pixels to be modified
+ * @param isLastCharacter a flag indicating if the current character is the last character of the message
+ */
 
     private static void ChangePixelsColor(String messageBinary, Pixel[] pixels, boolean isLastCharacter) {
         int messageIndex = 0;

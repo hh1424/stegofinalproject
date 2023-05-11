@@ -1,9 +1,15 @@
 package edu.guilford;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,6 +24,11 @@ import javafx.stage.Screen;
 //This class will be the pane that holds the method for the user
 //to input the message they want to encrypt and the image they want
 //to encrypt it in
+
+/** 
+ * the StegoPane class represents a custom JavaFX pane that provides a user interface for the Steganography App
+ * It allows the user to encrypt a message and embed it in an image of their choice
+ */
 public class StegoPane extends Pane {
     
     //add an beginning label to the pane
@@ -52,6 +63,13 @@ public class StegoPane extends Pane {
     private Button stegoImage;
     private Button decrypt;
 
+    //Add a hidden label to show the hidden message
+    private Label hiddenLabel;
+
+     /** 
+     * constructs a StegoPane object
+     * Initializes and sets up all the UI components 
+     */
     
     //Constructor for the StegoPane class
     public StegoPane() {
@@ -81,6 +99,8 @@ public class StegoPane extends Pane {
         messageLabel.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
         encryptLabel = new Label("Click to encrypt the message. Click to embed the message in the image");
         encryptLabel.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
+        hiddenLabel = new Label();
+        hiddenLabel.setStyle("-fx-font-size: 18px; -fx-font-type: Arial");
 
         //Instantiate the buttons
         encrypt = new Button("Encrypt");
@@ -136,6 +156,9 @@ public class StegoPane extends Pane {
         //Set the location of the stegoImage and decrypt buttons
         stegoImage.relocate((screenBounds.getWidth() / 2.8), (screenBounds.getHeight() / 1.2));
         decrypt.relocate((screenBounds.getWidth() / 1.8), (screenBounds.getHeight() / 1.2));
+
+        //Set the location of the hiddenLabel between the directionsLabel and the questionsLabel
+        hiddenLabel.relocate((screenBounds.getWidth() / 2.8), (screenBounds.getHeight() / 1.4));
 
         //Add an event listener for the newImage button to open a file chooser from the user's computer
         newImage.setOnAction(e -> {
@@ -212,16 +235,16 @@ public class StegoPane extends Pane {
                 e1.printStackTrace();
             }
 
-            // //***Print the encrypted and decrypted message to the console***
-            // System.out.println("Message: " + message);
-            // System.out.println("Encrypted Message: " + crypto);
-            // //decrypt the message the user entered
-            // try {
-            //     System.out.println("Decrypted Message: " + Crypto.decrypt(crypto));
-            // } catch (Exception e1) {
-            //     //Print the stack trace if there is an error
-            //     e1.printStackTrace();
-            // }
+            //***Print the encrypted and decrypted message to the console***
+            System.out.println("Message: " + message);
+            System.out.println("Encrypted Message: " + crypto);
+            //decrypt the message the user entered
+            try {
+                System.out.println("Decrypted Message: " + Crypto.decrypt(crypto));
+            } catch (Exception e1) {
+                //Print the stack trace if there is an error
+                e1.printStackTrace();
+            }
         });
 
         //Add an event listener to send the encrypted message into the image the user chose
@@ -245,17 +268,27 @@ public class StegoPane extends Pane {
             FileChooser fileChooser = new FileChooser();
             //Set the title of the fileChooser
             fileChooser.setTitle("Save Encrypted Image");
-            //Find the path to the users home
-            String path = "user.home";
-            //Set the initial directory of the fileChooser
-            fileChooser.setInitialDirectory(new File(System.getProperty(path)));
-            //Set the extension filter of the fileChooser
+            //Save the file as image files
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.jpeg", "*.bmp"));
-            //Instantiate a File object
-            File selectedFile = fileChooser.showSaveDialog(null);
-            //Instantiate an Image object
-            Image image = new Image(selectedFile.toURI().toString());
-            //Copy the image using the Commons IO library
+            //Set the initial directory of the fileChooser
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            //Set a default file name
+            fileChooser.setInitialFileName("encryptedImage.png");
+            //Show the dialog and get the selected file
+            File selectedFile = fileChooser.showSaveDialog(getScene().getWindow());
+            if (selectedFile != null) {
+                //Save the file
+                try (FileOutputStream outputStream = new FileOutputStream(selectedFile)) {
+                    Image image = imageView.getImage();
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+                    ImageIO.write(bImage, "png", outputStream);
+                    outputStream.flush();
+                    outputStream.close();
+                } catch (IOException e1) {
+                    System.err.println("Error saving file: " + e1.getMessage());
+                }
+            }
+            //Add a copy of the image to the EncodedImages folder
             try {
                 FileUtils.copyFile(selectedFile, new File("C:/stegofinalproject/src/main/EncodedImages/Used" + selectedFile.getName()), true);
             } catch (Exception e1) {
@@ -264,16 +297,16 @@ public class StegoPane extends Pane {
             }
         });
 
-        //Add an event listener for the stegoImage button to open a file chooser from the user's computer
+        //Add an event listener for the stegoImage button to open a file chooser from the EncodedImages folder
         stegoImage.setOnAction(e -> {
-            // Instantiate a FileChooser object
+            // Instantiate a FileChooser object to get the home directory
             FileChooser fileChooser = new FileChooser();
             //Set the title of the fileChooser
-            fileChooser.setTitle("Choose an Embedded Image");
-            //Find the path to the users home
-            String path = "C:/stegofinalproject/src/main/EncodedImages/Used";
+            fileChooser.setTitle("Open Encoded Image");
+            //Get the path to the EncodedImages Folder
+            String path = "C:/stegofinalproject/src/main/EncodedImages";
             //Set the initial directory of the fileChooser
-            fileChooser.setInitialDirectory(new File(System.getProperty(path)));
+            fileChooser.setInitialDirectory(new File(path));
             //Set the extension filter of the fileChooser
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.jpeg", "*.bmp"));
             //Instantiate a File object
@@ -295,6 +328,6 @@ public class StegoPane extends Pane {
             DecryptionLSB.Decrypt();
         });
 
-        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, imageText2, newImage, prevImage, imageView, encrypt, encryptLabel, send, directionsArea, questionLabel, stegoImage, decrypt);
+        this.getChildren().addAll(beginningLabel, messageLabel, messageText, imageText, imageText2, newImage, prevImage, imageView, encrypt, encryptLabel, send, directionsArea, questionLabel, stegoImage, decrypt, hiddenLabel);
     }
 }

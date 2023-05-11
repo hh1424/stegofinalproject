@@ -8,6 +8,18 @@ import javax.crypto.Cipher;
 
 //This class is used to encrypt the message the user entered
 //that will then be transported into the image the user chose
+
+/**
+ * The Crypto class provides methods for encrypting and decrypting a message using the AES encryption algorithm
+ * It contains constants for the algorithm, transformation, and secret key
+ * The encrypt method encrypts the given input string 
+ * It generates a key using the generateKey method, initializes a cipher with the encryption mode and generated key and encrypts the input string
+ * The decrypt method decrypts the given input string using AES decryption 
+ * It generates a key using the generateKey method, initializes a cipher with the decryption mode and generated key and decrypts the input string
+ * The generateKey method generates a key using the secret key string and the AES algorithm.
+ * It returns the generated key as a SecretKeySpec object.
+ */
+
 public class Crypto {
 
     private static final String ALGORITHM = "AES";
